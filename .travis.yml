@@ -1,0 +1,18 @@
+sudo: required
+services:
+  - docker
+before_install:
+  - docker build -t blakehowe/react-test -f ./client/Dockerfile.dev ./client
+  - docker run blakehowe/react-test npm test -- --coverage
+after_success:
+  - docker build -t blakehowe/multi-client ./client
+  - docker build -t blakehowe/multi-nginx ./nginx
+  - docker build -t blakehowe/multi-server ./server
+  - docker build -t blakehowe/multi-worker ./worker
+  # Log in to Docker CLI.
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take built images and push to docker hub registry
+  - docker push blakehowe/multi-client
+  - docker push blakehowe/multi-nginx
+  - docker push blakehowe/multi-server
+  - docker push blakehowe/multi-worker
