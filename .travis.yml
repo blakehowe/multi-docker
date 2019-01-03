@@ -17,3 +17,15 @@ after_success:
   - docker push blakehowe/multi-nginx
   - docker push blakehowe/multi-server
   - docker push blakehowe/multi-worker
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-918450492472"
+  bucket_path: "docker-multi"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
